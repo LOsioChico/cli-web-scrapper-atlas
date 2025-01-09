@@ -1,12 +1,16 @@
 {
   "name": "cli-web-scrapper-atlas",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "app.js",
   "scripts": {
     "start": "node app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "description": "CLI web scraper for realityrealtypr.com - Red Atlas Challenge",
+  "dependencies": {
+    "puppeteer": "^23.11.1"
+  }
 }
