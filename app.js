@@ -19,9 +19,7 @@ async function main() {
 
   try {
     const page = await browser.newPage();
-
     const properties = await scrapeProperties(propertyType, page, parseInt(pageNum));
-
     await fs.writeFile(outputFile, JSON.stringify(properties, null, 2));
     console.log(`Results saved to ${outputFile}`);
   } catch (error) {
@@ -43,19 +41,13 @@ async function scrapeProperties(propertyType, page, pageNum) {
 
     await page.goto(searchUrl.toString(), { waitUntil: "networkidle0" });
 
-    const propertyUrls = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll(".results > .row > div > :last-child > a:first-child"))
+    const propertyUrls = await page.evaluate(() =>
+      Array.from(document.querySelectorAll(".results > .row > div > :last-child > a:first-child"))
         .map((a) => a.href)
-        .filter((url) => url.includes("/compra-venta/"));
-    });
+        .filter((url) => url.includes("/compra-venta/")),
+    );
 
-    const properties = [];
-    for (const url of propertyUrls) {
-      const property = await scrapePropertyDetails(page, url);
-      properties.push(property);
-    }
-
-    return properties;
+    return Promise.all(propertyUrls.map((url) => scrapePropertyDetails(page, url)));
   } catch (error) {
     console.error("Error scraping properties:", error);
     throw error;
